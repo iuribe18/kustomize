@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: ups-api
+  labels:
+    app: ups-api
+spec:
+  selector:
+    app: ups-api
+  ports:
+    - name: http-api
+      port: 8020

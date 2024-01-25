@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ups-api
+spec:
+  selector:
+    matchLabels:
+      app: ups-api
+  template:
+    metadata:
+      labels:
+        app: ups-api
+    spec:
+      serviceAccount: ups-api
+      containers:
+        - name: ups-api
+          image: 893895740383.dkr.ecr.us-east-1.amazonaws.com/social-information-api
+          imagePullPolicy: Always
+          args:
+            - server 
+            - /opt/social-information-api/conf/dev.yml
+          resources:
+            limits:
+              memory: 5Gi
+              cpu: 1000m
+          env:
+            - name: JAVA_TOOL_OPTIONS
+              value: |
+                -Xmx4G
+                -Xms1G
+                -XX:+UseParNewGC 
+                -XX:+UseConcMarkSweepGC 
+                -XX:+CMSIncrementalMode 
+                -XX:+CMSIncrementalPacing 
+                -XX:SurvivorRatio=6 
+                -XX:-DisableExplicitGC 
+            - name: DD_AGENT_HOST
+              valueFrom: 
+                fieldRef:
+                  fieldPath: status.hostIP
+          ports:
+            - containerPort: 8020
+              name: http-api

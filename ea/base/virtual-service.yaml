@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: ups-api
+spec:
+  gateways:
+    - istio-system/apps-gateway  # Global internal Gateway
+  hosts: 
+    - ups-api-dev.social-dev-use1.stellar.eadp.cloud
+  http:
+    - name: ups-api
+      match:
+        - port: 443
+      route:
+        - destination:
+            host: ups-api
+            port:
+              number: 8020
+      retries:
+        attempts: 3
+        retryOn: connect-failure,unavailable
+        retryRemoteLocalities: true
+      timeout: 5s

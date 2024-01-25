@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: ups-dev
+  labels:
+    logging.stellar/elk-datastream: social-ups-dev-logs
+    logging.stellar/elk-tenant: social

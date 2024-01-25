@@ -1,0 +1,16 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: public
+spec:
+  selector:
+    istio: ingressgateway-public
+  servers:
+    - port:
+        name: https
+        number: 443
+        protocol: https
+      tls:
+        mode: SIMPLE
+      hosts:
+        - ups-api-dev.k.dev.social.ea.com

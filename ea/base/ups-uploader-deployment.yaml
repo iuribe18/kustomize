@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ups-uploader
+spec:
+  selector:
+    matchLabels:
+      app: ups-uploader
+  template:
+    metadata:
+      labels:
+        app: ups-uploader
+    spec:
+      serviceAccount: ups-api
+      volumes:
+        - name: secrets
+          secret:
+            secretName: secrets
+      containers:
+        - name: ups-uploader
+          image: 893895740383.dkr.ecr.us-east-1.amazonaws.com/ups-uploader
+          imagePullPolicy: Always
+          # volumeMounts:
+          #   - name: secrets
+          #     mountPath: /secrets
+          #     readOnly: true
+          args:
+            - server 
+            - /opt/ups-uploader/conf/dev.yml
+          resources:
+            limits:
+              memory: 5Gi
+              cpu: 1000m
+          env:
+            - name: JAVA_TOOL_OPTIONS
+              value: |
+                -Xmx4G
+                -Xms1G
+                -XX:+UseParNewGC 
+                -XX:+UseConcMarkSweepGC 
+                -XX:+CMSIncrementalMode 
+                -XX:+CMSIncrementalPacing 
+                -XX:SurvivorRatio=6 
+                -XX:-DisableExplicitGC
+          ports:
+            - containerPort: 8070
+              name: http-api-8070
+            - containerPort: 8071
+              name: http-api-8071
